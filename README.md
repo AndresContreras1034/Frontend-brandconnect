@@ -1,314 +1,160 @@
 # Brand Connect Frontend
 
-Interfaz web del sistema SaaS Brand Connect, construida con React + Vite. Este frontend gestiona la experiencia de usuario para un marketplace de creadores, integrando autenticación, marketplace, chatbot, pagos y panel de usuario.
+React and Vite interface for Brand Connect, a marketplace for brands and content creators.
 
----
+The frontend provides account registration and login, TOTP MFA, creator and client profiles, marketplace browsing, cart and checkout flows, Stripe result states, chat, chatbot support, and an administrative dashboard.
 
-## Descripción
+## Live Demo
 
-Este frontend permite a los usuarios:
+- [GitHub Pages deployment](https://andrescontreras1034.github.io/Frontend-brandconnect/)
+- [Brand Connect production site](https://brandconnect.social)
+- [Backend repository](https://github.com/AndresContreras1034/backend-brandconnect)
 
-- Registrarse e iniciar sesión
-- Autenticarse con JWT y MFA
-- Explorar el marketplace de servicios
-- Crear y gestionar perfiles de usuario o creador
-- Realizar pagos mediante Stripe
-- Usar un chatbot integrado
-- Acceder a dashboards personalizados
-- Gestionar carrito y compras
+## Implemented Features
 
-Está diseñado como una SPA (Single Page Application) modular y escalable.
+- Email registration and login
+- JWT session persistence
+- Email verification flow
+- TOTP MFA setup and verification
+- Protected React routes
+- Creator and client onboarding
+- Creator profiles and social links
+- Marketplace browsing and recommendations
+- Cart and checkout interface
+- Stripe payment history and result pages
+- Creator chat and negotiation interfaces
+- Support chatbot
+- Administration dashboard
+- Pricing, status, legal, and support pages
 
----
+## Architecture
 
-## Estado del proyecto (estimación real)
+```mermaid
+flowchart LR
+    USER[Browser] --> ROUTER[React Router]
+    ROUTER --> AUTH[AuthContext]
+    ROUTER --> PAGES[Feature Pages]
+    PAGES --> HOOKS[Custom Hooks]
+    HOOKS --> SERVICES[API Services]
+    SERVICES --> API[Brand Connect REST API]
+    PAGES --> STRIPE[Stripe.js]
+    PAGES --> CHAT[Chat and Chatbot UI]
+```
 
-### Frontend general: 75%
+Authentication state is handled by `AuthContext`, route protection is implemented in `AppRouter`, and API communication is isolated in the `src/services` layer.
 
-- Arquitectura modular completa
-- Separación por features (pages, components, hooks, services)
-- Sistema de rutas implementado
-- Context de autenticación funcional
-- Integración con backend estable
+## Technology Stack
 
-Falta:
-- optimización de rendimiento
-- mejoras en UX/UI
-- manejo avanzado de estados globales
-- refactor parcial de componentes grandes
+| Technology | Role |
+|---|---|
+| React 18 | UI components |
+| Vite | Development server and build |
+| React Router | Application routing and guards |
+| Context API | Authentication state |
+| Axios | HTTP API requests |
+| Stripe.js | Checkout integration |
+| QRCode React | TOTP setup |
+| Framer Motion | Interface animation |
+| Lucide React | Icons |
+| Socket.IO Client | Real-time client support |
+| CSS | Feature-level styling |
 
----
-
-## Estructura Completa
+## Project Structure
 
 ```text
 src/
-│
-├── assets/
-│   ├── Imágenes estáticas del proyecto (logos, iconos, ilustraciones)
-│   ├── Recursos multimedia reutilizables
-│   └── Archivos base del UI (svg, png, etc.)
-│
-├── components/
-│   ├── Componentes reutilizables de la interfaz
-│   ├── Organizados por dominio (auth, chatbot, marketplace, payments, etc.)
-│   ├── Componentes pequeños (botones, inputs, cards, modals)
-│   └── Sin lógica de negocio compleja (solo presentación)
-│
-├── context/
-│   ├── Estado global de la aplicación
-│   ├── AuthContext (autenticación y sesión)
-│   ├── Providers globales
-│   └── Evita prop drilling
-│
-├── hooks/
-│   ├── Hooks personalizados reutilizables
-│   ├── useAuth, useFetch, useMarketplace, useChatbot
-│   ├── Encapsulan lógica de negocio
-│   └── Reutilización entre componentes
-│
-├── layout/
-│   ├── Estructura general de la aplicación
-│   ├── Navbar, Footer, Layout principal
-│   ├── Wrappers de páginas
-│   └── Control de estructura visual global
-│
-├── pages/
-│   ├── Vistas principales de la aplicación
-│   ├── Cada carpeta representa una ruta
-│   ├── Ejemplos:
-│   │   ├── Home
-│   │   ├── Login
-│   │   ├── Register
-│   │   ├── Marketplace
-│   │   ├── Dashboard
-│   │   ├── Profile
-│   │   ├── Billing
-│   │   └── Payments
-│   └── Composición de componentes
-│
-├── routes/
-│   ├── Configuración de rutas
-│   ├── React Router setup
-│   ├── Rutas públicas y privadas
-│   └── Protección de rutas (auth guards)
-│
-├── services/
-│   ├── Comunicación con backend (API layer)
-│   ├── auth.service (login, register, MFA)
-│   ├── marketplace.service (servicios)
-│   ├── payment.service (Stripe)
-│   └── Axios / fetch centralizado
-│
-├── styles/
-│   ├── Estilos globales
-│   ├── Variables CSS (colores, tipografía, spacing)
-│   ├── Reset CSS
-│   └── Estilos compartidos
-│
-└── utils/
-    ├── Funciones auxiliares
-    ├── Formateadores (fechas, moneda, texto)
-    ├── Validadores de formularios
-    ├── Helpers puros sin React
-    └── Utilidades generales
-
+  assets/                 Static images and media
+  components/             Reusable UI and feature components
+  context/                Authentication context
+  hooks/                  Reusable API and state hooks
+  layout/                 Shared application layout
+  pages/                  Route-level views
+  routes/AppRouter.jsx    Route configuration and guards
+  services/               Backend API clients
+  styles/                 Shared CSS
+  utils/                  Formatting and validation helpers
+public/                   Static files and SPA fallback
+.github/workflows/        Azure Static Web Apps deployment
 ```
 
-## Principios de arquitectura
+## Requirements
 
-- Separación clara entre UI, lógica y servicios
-- Componentes reutilizables y desacoplados
-- Estado global controlado con Context API
-- Lógica de negocio fuera de los componentes
-- Escalabilidad tipo SaaS
-- Preparado para migrar a Redux o arquitecturas más avanzadas
+- Node.js 20 or newer
+- npm
+- An accessible Brand Connect API
 
----
+## Environment Variables
 
-## Objetivo
+Copy `.env.example` to `.env.local`:
 
-Mantener el frontend:
+```dotenv
+VITE_API_URL=http://localhost:3000/api
+```
 
-- Escalable
-- Mantenible
-- Modular
-- Preparado para crecimiento de equipo y producto
+For the production API:
 
-## Módulos principales
+```dotenv
+VITE_API_URL=https://api.brandconnect.social/api
+```
 
-### Autenticación
-- Login y registro
-- MFA setup y verificación
-- Persistencia de sesión
-- Protección de rutas
+The variable is read by Vite and must start with `VITE_`.
 
-Estado: 85%
+## Installation
 
----
+```powershell
+npm install
+npm run dev
+```
 
-### Marketplace
-- Listado de servicios
-- Visualización de ofertas
-- Interacción con servicios
-- Integración con backend
+The development server runs on port `5173`.
 
-Estado: 80%
+## Available Commands
 
----
+```powershell
+npm run dev
+npm run build
+npm run lint
+npm run preview
+```
 
-### Dashboard
-- Panel de usuario
-- Vista de actividad
-- Acceso a funcionalidades principales
+## Backend Integration
 
-Estado: 70%
+The frontend consumes the Brand Connect REST API for authentication, profiles, marketplace operations, chat, chatbot, payments, subscriptions, fulfillment, and administration.
 
----
+Set `VITE_API_URL` to the API base URL. The API origin must also allow the frontend origin through CORS.
 
-### Chatbot
-- Interfaz de conversación
-- Integración con backend
-- Soporte básico automatizado
+## Stripe
 
-Estado: 70%
+Stripe.js is used for browser-side checkout integration. Payment completion and cancellation states are handled by dedicated result routes.
 
----
+Stripe secrets must remain in the backend. The frontend should only contain publishable or public configuration.
 
-### Pagos (Stripe)
-- Checkout flow
-- Botón de pago
-- Estado de transacciones
+## Deployment
 
-Estado: 90%
+The repository includes an Azure Static Web Apps workflow in `.github/workflows`.
 
----
+For a static deployment:
 
-### Perfil de usuario / creador
-- Edición de datos
-- Subida de imagen
-- Redes sociales
-- Configuración básica
+1. Configure `VITE_API_URL`.
+2. Run `npm run build`.
+3. Publish the `dist` directory.
+4. Configure SPA fallback for React Router routes.
+5. Configure CORS in the backend for the deployed frontend origin.
 
-Estado: 80%
+The GitHub Pages deployment may require repository-base-path configuration depending on the final domain.
 
----
+## Known Limitations
 
-### Carrito
-- Agregar servicios
-- Visualización de items
-- Integración con checkout
+- Automated frontend tests are not included.
+- Route and component mocks are not part of the repository.
+- Several pages depend on a running backend and external services.
+- Browser authentication state is stored in local storage.
+- The frontend should add route-level lazy loading and component refactoring before scaling to a large team.
+- The live backend and third-party services determine whether payment and chatbot flows are usable.
 
-Estado: 75%
+## Security
 
----
-
-## Arquitectura
-
-### Componentes
-
-- UI reutilizable por dominio (auth, marketplace, payments)
-- Componentes desacoplados por feature
-- CSS modular por componente
-
----
-
-### Estado global
-
-- Context API para autenticación
-- Hooks personalizados para lógica de negocio
-- Servicios separados para API calls
-
----
-
-### Routing
-
-- React Router DOM
-- Rutas públicas y privadas
-- Protección por autenticación
-
----
-
-## Flujo de la aplicación
-
-1. Usuario accede a la plataforma
-2. Se registra o inicia sesión
-3. AuthContext guarda sesión (JWT)
-4. Usuario navega al marketplace
-5. Selecciona servicios
-6. Agrega al carrito
-7. Realiza checkout con Stripe
-8. Estado de pago se actualiza
-9. Chatbot ofrece soporte
-
----
-
-## Tecnologías usadas
-
-- React
-- Vite
-- React Router
-- Context API
-- Axios
-- CSS modular
-
----
-
-## Servicios
-
-Frontend consume API del backend mediante:
-
-- auth.service.js
-- influencer.service.js
-- payment.service.js
-
----
-
-## Estado de calidad del código
-
-- Estructura: 85%
-- Reutilización de componentes: 80%
-- Separación de lógica: 85%
-- Manejo de estado: 75%
-- UI/UX: 70%
-
----
-
-## Problemas actuales conocidos
-
-- Algunos componentes demasiado grandes
-- Falta de lazy loading en rutas
-- Optimización de renders pendiente
-- UI inconsistente en algunas páginas
-- Falta de testing frontend
-
----
-
-## Roadmap del frontend
-
-### Corto plazo
-- Mejorar UI/UX
-- Optimizar rutas con lazy loading
-- Refactor de componentes pesados
-
-### Medio plazo
-- Implementar Redux o Zustand (opcional)
-- Mejorar chatbot UI
-- Mejorar dashboard analytics
-
-### Largo plazo
-- PWA support
-- Mejor rendimiento en mobile
-- Animaciones avanzadas
-
----
-
-## Objetivo
-
-Crear una experiencia de usuario fluida para un marketplace SaaS completo, optimizado para conversión y escalabilidad.
-
----
-
-## Autor
-
-Frontend desarrollado como parte del sistema Brand Connect SaaS.
+- Never place Stripe secret keys or backend credentials in `VITE_*` variables.
+- Keep JWT values and user data outside application logs.
+- Validate authentication and authorization in the backend; frontend route guards improve UX but do not secure the API.
+- Review external API responses before rendering dynamic content.

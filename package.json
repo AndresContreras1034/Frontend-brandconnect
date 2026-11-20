@@ -3,7 +3,8 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
-  "homepage": "https://Andres-Mendez1034.github.io/Andres-Mendez1034.io",
+  "homepage": "https://andrescontreras1034.github.io/Frontend-brandconnect/",
+  "description": "React frontend for the Brand Connect creator marketplace",
   "scripts": {
     "dev": "vite",
     "build": "vite build",

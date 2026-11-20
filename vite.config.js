@@ -5,7 +5,8 @@ import path from 'path';
 export default defineConfig({
   plugins: [react()],
 
-  // 🔥 IMPORTANTE: dominio personalizado
+  // Custom-domain deployments use root paths. The GitHub Pages
+  // deployment is currently served through the repository URL.
   base: '/',
 
   resolve: {
